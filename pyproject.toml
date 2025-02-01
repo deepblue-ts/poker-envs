@@ -20,6 +20,7 @@ pettingzoo = "^1.24.3"
 seaborn = "^0.13.2"
 tslearn = "^0.6.3"
 gymnasium = "^1.0.0"
+requests = "^2.32.3"
 
 
 [build-system]
