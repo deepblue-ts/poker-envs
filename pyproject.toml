@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "poker-envs"
+version = "0.1.0"
+description = ""
+authors = ["ryuji-hashimoto0110"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^1.26.1"
+pandas = "^2.1.2"
+matplotlib = "^3.8.1"
+opencv-python = "^4.8.1.78"
+rich = "^13.7.0"
+torch = "^2.2.1"
+torchvision = "^0.17.1"
+pickleshare = "^0.7.5"
+tqdm = "^4.66.4"
+pettingzoo = "^1.24.3"
+seaborn = "^0.13.2"
+tslearn = "^0.6.3"
+gymnasium = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
