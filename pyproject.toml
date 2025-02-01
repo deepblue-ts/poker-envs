@@ -21,6 +21,8 @@ seaborn = "^0.13.2"
 tslearn = "^0.6.3"
 gymnasium = "^1.0.0"
 requests = "^2.32.3"
+pytest = "^8.3.4"
+black = "^25.1.0"
 
 
 [build-system]
