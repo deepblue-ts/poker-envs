@@ -1,7 +1,6 @@
 import requests
 from requests.models import Response
 from rich import print
-import time
 from typing import Literal
 from typing import Optional
 
@@ -38,7 +37,7 @@ class SlumbotHandler:
         return response
 
     def action(
-        self, action: Literal["f", "c", "k", "b"], amount: int
+        self, action: Literal["f", "c", "k", "b"], amount: Optional[int] = None
     ) -> dict[str, str]:
         return self.post2slumbot(endpoint_name="act", action=action, amount=amount)
 
@@ -59,7 +58,6 @@ class SlumbotHandler:
                     raise ValueError("Specify 'action' to take action.")
                 incr: str = self._convert_action2incr(action=action, amount=amount)
                 payload["incr"] = incr
-        time.sleep(1)
         response: Response = requests.post(url, headers={}, json=payload)
         if response.status_code != 200:
             raise ValueError(
@@ -69,9 +67,32 @@ class SlumbotHandler:
         return response.json()
 
     def _judge_game_ended(self, response: dict[str, str]) -> bool:
-        pass
+        if "error_msg" in response:
+            raise ValueError(f"error_msg:{response['error_msg']}")
+        assert "action" in response, f"response:{response}"
+        if response["action"] == "f":
+            return True
+        if (
+            "winnings" in response
+            or "won_pot" in response
+            or "session_num_hands" in response
+            or "baseline_winnings" in response
+            or "session_total" in response
+            or "session_baseline_total" in response
+        ):
+            return True
+        return False
 
     def _convert_action2incr(
         self, action: Literal["f", "c", "k", "b"], amount: int
     ) -> str:
-        pass
+        if action == "f":
+            return "f"
+        elif action == "c":
+            return "c"
+        elif action == "k":
+            return "k"
+        elif action == "b":
+            return f"b{amount}"
+        else:
+            raise ValueError(f"Invalid action:{action}")
