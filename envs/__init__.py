@@ -1,1 +1,1 @@
-from envs.slumbot_handler import SlumbotHandler
+from envs import slumbot_utils
