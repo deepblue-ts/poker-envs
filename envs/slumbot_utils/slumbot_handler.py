@@ -25,9 +25,10 @@ class SlumbotHandler:
         self.set_current_token(token=response["token"])
         return response
 
-    def create_new_hand(self) -> dict[str, str]:
+    def create_new_hand(self, refresh_token: bool = False) -> dict[str, str]:
         for _ in range(10):
-            _ = self.login()
+            if self.current_token is None or refresh_token:
+                _ = self.login()
             response: dict[str, str] = self.post2slumbot(endpoint_name="new_hand")
             done: bool = self._judge_game_ended(response=response)
             if not done:

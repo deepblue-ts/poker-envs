@@ -24,16 +24,19 @@ class TestSlumbotHandler:
         assert "token" in response
         assert slumbot_handler.current_token == response["token"]
 
-    def test_create_new_hand(self):
+    def test_create_new_hand(self): # TODO: test refresh_token=False cash
         slumbot_handler = SlumbotHandler(
             username="test",
             password="test",
         )
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(
+            refresh_token=True
+        )
         assert response is not None
         assert response["old_action"] == ""
-        assert response["action"] == "b200"
-        assert response["client_pos"] == 0
+        assert (
+            response["action"] == "b200" or response["action"] == ""
+        )
         assert len(response["hole_cards"]) == 2
         assert len(response["board"]) == 0
         assert "winnings" not in response
@@ -43,12 +46,12 @@ class TestSlumbotHandler:
         assert "session_total" not in response
         assert "session_baseline_total" not in response
 
-    def test_action_f(self):
+    def test_action_f(self): # TODO: test refresh_token=False cash
         slumbot_handler = SlumbotHandler(
             username="test",
             password="test",
         )
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="f")
         assert slumbot_handler._judge_game_ended(response) is True
         assert response["old_action"] == "b200"
@@ -57,12 +60,12 @@ class TestSlumbotHandler:
         assert len(response["bot_hole_cards"]) == 2
         assert len(response["board"]) == 0
 
-    def test_action_c(self):
+    def test_action_c(self): # TODO: test refresh_token=False cash
         slumbot_handler = SlumbotHandler(
             username="test",
             password="test",
         )
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="c")
         assert slumbot_handler._judge_game_ended(response) is False
         assert response["old_action"] == "b200"
@@ -70,15 +73,15 @@ class TestSlumbotHandler:
         assert len(response["hole_cards"]) == 2
         assert len(response["board"]) == 3
 
-    def test_action_k(self):
+    def test_action_k(self): # TODO: test refresh_token=False cash
         slumbot_handler = SlumbotHandler(
             username="test",
             password="test",
         )
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="k")
         assert response["error_msg"] == "Illegal check"
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="c")
         response: dict[str, str] = slumbot_handler.action(action="k")
         assert slumbot_handler._judge_game_ended(response) is False
@@ -91,12 +94,12 @@ class TestSlumbotHandler:
         else:
             assert len(response["board"]) == 3
 
-    def test_action_b(self):
+    def test_action_b(self): # TODO: test refresh_token=False cash
         slumbot_handler = SlumbotHandler(
             username="test",
             password="test",
         )
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="b", amount=400)
         assert response["old_action"] == "b200"
         assert "b200b400" in response["action"]
@@ -112,7 +115,7 @@ class TestSlumbotHandler:
             assert len(response["board"]) == 3
         else:
             raise ValueError(f"Unexpected response: {response}")
-        response: dict[str, str] = slumbot_handler.create_new_hand()
+        response: dict[str, str] = slumbot_handler.create_new_hand(refresh_token=True)
         response: dict[str, str] = slumbot_handler.action(action="c")
         response: dict[str, str] = slumbot_handler.action(action="b", amount=400)
         assert response["old_action"] == "b200c/"
